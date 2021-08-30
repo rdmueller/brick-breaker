@@ -2,75 +2,101 @@
 class SpriteKind:
     brick = SpriteKind.create()
     ball = SpriteKind.create()
+
+def on_on_overlap(sprite2, otherSprite2):
+    global numBlocks, score
+    sprite2.vy = randint(50, 100)
+    otherSprite2.destroy(effects.disintegrate, 200)
+    numBlocks += -1
+    console.log_value("numBlocks", numBlocks)
+    console.log_value("ballx", sprite2.x)
+    console.log_value("bally", sprite2.y)
+    console.log_value("brickx", 0)
+    console.log_value("bricky", otherSprite2.y)
+    score += 10
+    music.knock.play()
+    scoresprite.set_text("Score: " + ("" + str(score)))
+sprites.on_overlap(SpriteKind.ball, SpriteKind.brick, on_on_overlap)
+
 def drawLevel():
-    global x, sprite2, mySprite, y
+    global x, sprite22, mySprite, y
     while y <= len(brickmap) - 1:
         x = 0
-        console.log_value("y", y)
         while x <= 9 - 1:
-            console.log_value("x", x)
             if brickmap[y][x] != 0:
-                sprite2 = assets.image("""
+                sprite22 = assets.image("""
                     brick1
                 """)
                 if brickmap[y][x] == 1:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick1
                     """)
                 if brickmap[y][x] == 2:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick2
                     """)
                 if brickmap[y][x] == 3:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick3
                     """)
                 if brickmap[y][x] == 4:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick4
                     """)
                 if brickmap[y][x] == 5:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick5
                     """)
                 if brickmap[y][x] == 6:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick6
                     """)
                 if brickmap[y][x] == 7:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick7
                     """)
                 if brickmap[y][x] == 8:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick8
                     """)
                 if brickmap[y][x] == 9:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick9
                     """)
                 if brickmap[y][x] == 10:
-                    sprite2 = assets.image("""
+                    sprite22 = assets.image("""
                         brick10
                     """)
-                mySprite = sprites.create(sprite2, SpriteKind.brick)
+                mySprite = sprites.create(sprite22, SpriteKind.brick)
                 mySprite.set_position(16 + x * 16, 30 + y * 8)
             x += 1
         y += 1
+
+def on_on_overlap2(sprite, otherSprite):
+    global score
+    sprite.vy = randint(-50, -100)
+    score += 1
+    music.thump.play()
+    scoresprite.set_text("Score: " + ("" + str(score)))
+sprites.on_overlap(SpriteKind.ball, SpriteKind.player, on_on_overlap2)
+
 def getLevel(num: number):
     global brickmap
-    brickmap = [[0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [3, 4, 5, 6, 7, 8, 9, 10, 0],
-        [4, 5, 6, 7, 8, 9, 10, 0, 0]]
+    brickmap = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 4, 1, 4, 1, 4, 1, 0],
+        [0, 4, 1, 4, 1, 4, 1, 4, 0],
+        [0, 1, 4, 1, 4, 1, 4, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
     return brickmap
-sprite2: Image = None
+mySprite: Sprite = None
+sprite22: Image = None
 x = 0
 brickmap: List[List[number]] = []
 y = 0
-mySprite: Sprite = None
-sprite = None
+numBlocks = 0
+score = 0
+scoresprite: TextSprite = None
+sprite3 = None
 music.sonar.play()
 scene.set_background_image(img("""
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
@@ -201,15 +227,35 @@ tiles.set_tilemap(tilemap("""
 """))
 getLevel(1)
 drawLevel()
-textSprite = textsprite.create("Score: 0", 0, 4)
-textSprite.set_position(80, 10)
-textSprite.set_outline(1, 2)
+scoresprite = textsprite.create("Score: 0", 0, 4)
+scoresprite.set_position(80, 5)
+scoresprite.set_outline(1, 2)
+score = 0
+numBlocks = 0
 bat = sprites.create(assets.image("""
     paddle
 """), SpriteKind.player)
-mySprite.set_flag(SpriteFlag.GHOST_THROUGH_WALLS, True)
+bat.set_flag(SpriteFlag.GHOST_THROUGH_WALLS, True)
+bat.set_stay_in_screen(True)
 bat.set_position(80, 110)
 controller.move_sprite(bat, 100, 0)
 ballsprite = sprites.create(assets.image("""
     ball
 """), SpriteKind.ball)
+ballsprite.set_position(80, 100)
+ballsprite.set_velocity(randint(50, 100), randint(-50, -100))
+ballsprite.set_stay_in_screen(False)
+ballsprite.set_bounce_on_wall(False)
+info.set_life(3)
+
+def on_update_interval():
+    if ballsprite.x <= 10:
+        ballsprite.vx = abs(ballsprite.vx)
+    if ballsprite.x >= scene.screen_width() - 10:
+        ballsprite.vx = abs(ballsprite.vx) * -1
+    if ballsprite.y <= 20:
+        ballsprite.vy = abs(ballsprite.vy)
+    if ballsprite.y >= scene.screen_height():
+        info.change_life_by(-1)
+        ballsprite.vy = abs(ballsprite.vy) * -1
+game.on_update_interval(100, on_update_interval)

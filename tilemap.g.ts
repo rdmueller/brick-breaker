@@ -39,11 +39,11 @@ namespace myTiles {
             case "level1":
             case "level1":return tiles.createTilemap(hex`0a00070006060606060606060606010303030303030303020400000000000000000504000000000000000005040000000000000000050400000000000000000504000000000000000005`, img`
 . . . . . . . . . . 
-2 2 2 2 2 2 2 2 2 2 
-2 . . . . . . . . 2 
-2 . . . . . . . . 2 
-2 . . . . . . . . 2 
-2 . . . . . . . . 2 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
 . . . . . . . . . . 
 `, [myTiles.transparency16,myTiles.tile1,myTiles.tile3,myTiles.tile2,myTiles.tile4,myTiles.tile5,myTiles.tile6], TileScale.Sixteen);
         }

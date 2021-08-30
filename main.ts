@@ -2,43 +2,72 @@ namespace SpriteKind {
     export const brick = SpriteKind.create()
     export const ball = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.ball, SpriteKind.brick, function (sprite2, otherSprite2) {
+    otherSprite2.destroy(effects.disintegrate, 200)
+    numBlocks += -1
+    diffx = Math.abs(sprite2.x - otherSprite2.x)
+    diffy = Math.abs(sprite2.y - otherSprite2.y) * 2
+    if (diffx > diffy) {
+        ballsprite.vx = ballsprite.vx * -1
+    } else {
+        if (sprite2.y > otherSprite2.y) {
+            ballsprite.vy = randint(50, 100)
+        } else {
+            ballsprite.vy = randint(-50, -100)
+        }
+    }
+    score += 10
+    music.knock.play()
+    scoresprite.setText("Score: " + ("" + score))
+})
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    controller.moveSprite(ballsprite, 0, 0)
+    ballsprite.setVelocity(randint(50, 100), randint(-50, -100))
+})
+function resetBallAndBat () {
+    ballsprite.setPosition(80, 101)
+    bat.setPosition(80, 112)
+    controller.moveSprite(bat, 100, 0)
+    controller.moveSprite(ballsprite, 100, 0)
+    ballsprite.setVelocity(0, 0)
+}
 function drawLevel () {
     while (y <= brickmap.length - 1) {
         x = 0
         while (x <= 9 - 1) {
             if (brickmap[y][x] != 0) {
-                sprite2 = assets.image`brick1`
+                sprite22 = assets.image`brick1`
                 if (brickmap[y][x] == 1) {
-                    sprite2 = assets.image`brick1`
+                    sprite22 = assets.image`brick1`
                 }
                 if (brickmap[y][x] == 2) {
-                    sprite2 = assets.image`brick2`
+                    sprite22 = assets.image`brick2`
                 }
                 if (brickmap[y][x] == 3) {
-                    sprite2 = assets.image`brick3`
+                    sprite22 = assets.image`brick3`
                 }
                 if (brickmap[y][x] == 4) {
-                    sprite2 = assets.image`brick4`
+                    sprite22 = assets.image`brick4`
                 }
                 if (brickmap[y][x] == 5) {
-                    sprite2 = assets.image`brick5`
+                    sprite22 = assets.image`brick5`
                 }
                 if (brickmap[y][x] == 6) {
-                    sprite2 = assets.image`brick6`
+                    sprite22 = assets.image`brick6`
                 }
                 if (brickmap[y][x] == 7) {
-                    sprite2 = assets.image`brick7`
+                    sprite22 = assets.image`brick7`
                 }
                 if (brickmap[y][x] == 8) {
-                    sprite2 = assets.image`brick8`
+                    sprite22 = assets.image`brick8`
                 }
                 if (brickmap[y][x] == 9) {
-                    sprite2 = assets.image`brick9`
+                    sprite22 = assets.image`brick9`
                 }
                 if (brickmap[y][x] == 10) {
-                    sprite2 = assets.image`brick10`
+                    sprite22 = assets.image`brick10`
                 }
-                mySprite = sprites.create(sprite2, SpriteKind.brick)
+                mySprite = sprites.create(sprite22, SpriteKind.brick)
                 mySprite.setPosition(16 + x * 16, 30 + y * 8)
             }
             x += 1
@@ -50,69 +79,62 @@ sprites.onOverlap(SpriteKind.ball, SpriteKind.Player, function (sprite, otherSpr
     sprite.vy = randint(-50, -100)
     score += 1
     music.thump.play()
-    scoresprite.setText("Score: " + score)
-})
-sprites.onOverlap(SpriteKind.ball, SpriteKind.brick, function (sprite, otherSprite) {
-    sprite.vy = randint(50, 100)
-    otherSprite.destroy(effects.disintegrate, 200)
-    score += 10
-    music.knock.play()
-    scoresprite.setText("Score: " + score)
+    scoresprite.setText("Score: " + ("" + score))
 })
 function getLevel (num: number) {
     brickmap = [
     [
     0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
-    ],
-    [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9
-    ],
-    [
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
-    ],
-    [
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0
     ],
     [
+    0,
+    1,
     4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
+    1,
+    4,
+    1,
+    4,
+    1,
+    0
+    ],
+    [
+    0,
+    4,
+    1,
+    4,
+    1,
+    4,
+    1,
+    4,
+    0
+    ],
+    [
+    0,
+    1,
+    4,
+    1,
+    4,
+    1,
+    4,
+    1,
+    0
+    ],
+    [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0,
     0
     ]
@@ -120,13 +142,17 @@ function getLevel (num: number) {
     return brickmap
 }
 let mySprite: Sprite = null
-let sprite2: Image = null
+let sprite22: Image = null
 let x = 0
 let brickmap: number[][] = []
 let y = 0
+let diffy = 0
+let diffx = 0
+let ballsprite: Sprite = null
+let bat: Sprite = null
 let score = 0
 let scoresprite: TextSprite = null
-let sprite = null
+let sprite3 = null
 music.sonar.play()
 scene.setBackgroundImage(img`
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
@@ -258,15 +284,34 @@ tiles.setTilemap(tilemap`level1`)
 getLevel(1)
 drawLevel()
 scoresprite = textsprite.create("Score: 0", 0, 4)
-scoresprite.setPosition(80, 10)
+scoresprite.setPosition(80, 5)
 scoresprite.setOutline(1, 2)
 score = 0
-let bat = sprites.create(assets.image`paddle`, SpriteKind.Player)
+let numBlocks = 0
+bat = sprites.create(assets.image`paddle`, SpriteKind.Player)
 bat.setFlag(SpriteFlag.GhostThroughWalls, true)
-bat.setPosition(80, 110)
-controller.moveSprite(bat, 100, 0)
-let ballsprite = sprites.create(assets.image`ball`, SpriteKind.ball)
-ballsprite.setPosition(80, 105)
-ballsprite.setVelocity(randint(50, 100), randint(-50, -100))
-ballsprite.setStayInScreen(true)
-ballsprite.setBounceOnWall(true)
+bat.setStayInScreen(true)
+ballsprite = sprites.create(assets.image`ball`, SpriteKind.ball)
+ballsprite.setStayInScreen(false)
+info.setLife(3)
+resetBallAndBat()
+game.onUpdateInterval(100, function () {
+    console.logValue("ballx", ballsprite.x)
+    console.logValue("velox", ballsprite.vx)
+    if (ballsprite.x <= 10) {
+        ballsprite.vx = Math.abs(ballsprite.vx)
+    }
+    if (ballsprite.x >= scene.screenWidth() - 10) {
+        console.logValue("velox", Math.abs(ballsprite.vx))
+        ballsprite.vx = Math.abs(ballsprite.vx) * -1
+        console.log("bounce")
+    }
+    if (ballsprite.y <= 30) {
+        ballsprite.vy = Math.abs(ballsprite.vy)
+    }
+    if (ballsprite.bottom >= scene.screenHeight() - 8) {
+        info.changeLifeBy(-1)
+        music.sonar.play()
+        resetBallAndBat()
+    }
+})
