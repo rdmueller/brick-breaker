@@ -1,0 +1,46 @@
+{
+    "name": "Brick-Breaker",
+    "description": "",
+    "dependencies": {
+        "device": "*"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "assets.json",
+        "tilemap.g.jres",
+        "tilemap.g.ts",
+        "images.g.jres",
+        "images.g.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "1.5.46",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "tsprj",
+    "palette": [
+        "#000000",
+        "#000000",
+        "#555555",
+        "#bbbbbb",
+        "#ffffff",
+        "#662222",
+        "#cc8888",
+        "#226622",
+        "#88cc88",
+        "#222266",
+        "#8888cc",
+        "#666622",
+        "#cccc88",
+        "#226666",
+        "#88cccc",
+        "#662266"
+    ]
+}
