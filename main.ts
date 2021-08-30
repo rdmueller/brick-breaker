@@ -1,6 +1,118 @@
 namespace SpriteKind {
     export const brick = SpriteKind.create()
+    export const ball = SpriteKind.create()
 }
+function drawLevel () {
+    while (y <= brickmap.length - 1) {
+        x = 0
+        while (x <= 9 - 1) {
+            if (brickmap[y][x] != 0) {
+                sprite2 = assets.image`brick1`
+                if (brickmap[y][x] == 1) {
+                    sprite2 = assets.image`brick1`
+                }
+                if (brickmap[y][x] == 2) {
+                    sprite2 = assets.image`brick2`
+                }
+                if (brickmap[y][x] == 3) {
+                    sprite2 = assets.image`brick3`
+                }
+                if (brickmap[y][x] == 4) {
+                    sprite2 = assets.image`brick4`
+                }
+                if (brickmap[y][x] == 5) {
+                    sprite2 = assets.image`brick5`
+                }
+                if (brickmap[y][x] == 6) {
+                    sprite2 = assets.image`brick6`
+                }
+                if (brickmap[y][x] == 7) {
+                    sprite2 = assets.image`brick7`
+                }
+                if (brickmap[y][x] == 8) {
+                    sprite2 = assets.image`brick8`
+                }
+                if (brickmap[y][x] == 9) {
+                    sprite2 = assets.image`brick9`
+                }
+                if (brickmap[y][x] == 10) {
+                    sprite2 = assets.image`brick10`
+                }
+                mySprite = sprites.create(sprite2, SpriteKind.brick)
+                mySprite.setPosition(16 + x * 16, 30 + y * 8)
+            }
+            x += 1
+        }
+        y += 1
+    }
+}
+function getLevel (num: number) {
+    brickmap = [
+    [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+    ],
+    [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+    ],
+    [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+    ],
+    [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    0
+    ],
+    [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    0,
+    0
+    ]
+    ]
+    return brickmap
+}
+let sprite2: Image = null
+let x = 0
+let brickmap: number[][] = []
+let y = 0
+let mySprite: Sprite = null
+let sprite = null
+music.sonar.play()
 scene.setBackgroundImage(img`
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
@@ -123,11 +235,18 @@ scene.setBackgroundImage(img`
     1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
     1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
     `)
+color.setPalette(
+color.originalPalette
+)
+scroller.scrollBackgroundWithSpeed(-10, 0)
 tiles.setTilemap(tilemap`level1`)
-for (let y = 0; y < 5; y++) {
-for (let x = 0; x < 9; x++) {
-    let mySprite = sprites.create(assets.image`brick-red`, SpriteKind.brick)
-    mySprite.setPosition(16+x*16, 30+y*8)
-
-}
-}
+getLevel(1)
+drawLevel()
+let textSprite = textsprite.create("Score: 0", 0, 4)
+textSprite.setPosition(80, 10)
+textSprite.setOutline(1, 2)
+let bat = sprites.create(assets.image`paddle`, SpriteKind.Player)
+mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
+bat.setPosition(80, 110)
+controller.moveSprite(bat, 100, 0)
+let ballsprite = sprites.create(assets.image`ball`, SpriteKind.ball)

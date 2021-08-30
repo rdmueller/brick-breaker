@@ -44,7 +44,7 @@ namespace myTiles {
 2 . . . . . . . . 2 
 2 . . . . . . . . 2 
 2 . . . . . . . . 2 
-2 . . . . . . . . 2 
+. . . . . . . . . . 
 `, [myTiles.transparency16,myTiles.tile1,myTiles.tile3,myTiles.tile2,myTiles.tile4,myTiles.tile5,myTiles.tile6], TileScale.Sixteen);
         }
         return null;
