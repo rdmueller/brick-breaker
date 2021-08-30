@@ -46,6 +46,19 @@ function drawLevel () {
         y += 1
     }
 }
+sprites.onOverlap(SpriteKind.ball, SpriteKind.Player, function (sprite, otherSprite) {
+    sprite.vy = randint(-50, -100)
+    score += 1
+    music.thump.play()
+    scoresprite.setText("Score: " + score)
+})
+sprites.onOverlap(SpriteKind.ball, SpriteKind.brick, function (sprite, otherSprite) {
+    sprite.vy = randint(50, 100)
+    otherSprite.destroy(effects.disintegrate, 200)
+    score += 10
+    music.knock.play()
+    scoresprite.setText("Score: " + score)
+})
 function getLevel (num: number) {
     brickmap = [
     [
@@ -106,11 +119,13 @@ function getLevel (num: number) {
     ]
     return brickmap
 }
+let mySprite: Sprite = null
 let sprite2: Image = null
 let x = 0
 let brickmap: number[][] = []
 let y = 0
-let mySprite: Sprite = null
+let score = 0
+let scoresprite: TextSprite = null
 let sprite = null
 music.sonar.play()
 scene.setBackgroundImage(img`
@@ -242,11 +257,16 @@ scroller.scrollBackgroundWithSpeed(-10, 0)
 tiles.setTilemap(tilemap`level1`)
 getLevel(1)
 drawLevel()
-let textSprite = textsprite.create("Score: 0", 0, 4)
-textSprite.setPosition(80, 10)
-textSprite.setOutline(1, 2)
+scoresprite = textsprite.create("Score: 0", 0, 4)
+scoresprite.setPosition(80, 10)
+scoresprite.setOutline(1, 2)
+score = 0
 let bat = sprites.create(assets.image`paddle`, SpriteKind.Player)
-mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
+bat.setFlag(SpriteFlag.GhostThroughWalls, true)
 bat.setPosition(80, 110)
 controller.moveSprite(bat, 100, 0)
 let ballsprite = sprites.create(assets.image`ball`, SpriteKind.ball)
+ballsprite.setPosition(80, 105)
+ballsprite.setVelocity(randint(50, 100), randint(-50, -100))
+ballsprite.setStayInScreen(true)
+ballsprite.setBounceOnWall(true)
