@@ -4,22 +4,47 @@ class SpriteKind:
     ball = SpriteKind.create()
 
 def on_on_overlap(sprite2, otherSprite2):
-    global numBlocks, score
-    sprite2.vy = randint(50, 100)
+    global numBlocks, diffx, diffy, score, level
     otherSprite2.destroy(effects.disintegrate, 200)
-    numBlocks += -1
-    console.log_value("numBlocks", numBlocks)
-    console.log_value("ballx", sprite2.x)
-    console.log_value("bally", sprite2.y)
-    console.log_value("brickx", 0)
-    console.log_value("bricky", otherSprite2.y)
+    numBlocks += -1    
+    diffx = abs(sprite2.x - otherSprite2.x)
+    diffy = abs(sprite2.y - otherSprite2.y) * 2
+    if diffx > diffy:
+        ballsprite.vx = ballsprite.vx * -1
+    else:
+        if sprite2.y > otherSprite2.y:
+            ballsprite.vy = randint(50, 100)
+        else:
+            ballsprite.vy = randint(-50, -100)
     score += 10
     music.knock.play()
+    if numBlocks == 0:
+        level += 1
+        getLevel(level)
+        resetBallAndBat()
+        drawLevel()
+        updateLevel()
+
     scoresprite.set_text("Score: " + ("" + str(score)))
 sprites.on_overlap(SpriteKind.ball, SpriteKind.brick, on_on_overlap)
 
+def on_a_pressed():
+    global vx
+    controller.move_sprite(ballsprite, 0, 0)
+    vx = randint(50, 100)
+    ballsprite.set_velocity(vx, randint(-50, -100))
+controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
+
+def resetBallAndBat():
+    ballsprite.set_position(80, 101)
+    bat.set_position(80, 112)
+    controller.move_sprite(bat, 100, 0)
+    controller.move_sprite(ballsprite, 100, 0)
+    ballsprite.set_velocity(0, 0)
+    vx = 0
 def drawLevel():
-    global x, sprite22, mySprite, y
+    global x, sprite22, mySprite, numBlocks, y
+    y = 0
     while y <= len(brickmap) - 1:
         x = 0
         while x <= 9 - 1:
@@ -69,6 +94,7 @@ def drawLevel():
                     """)
                 mySprite = sprites.create(sprite22, SpriteKind.brick)
                 mySprite.set_position(16 + x * 16, 30 + y * 8)
+                numBlocks += 1
             x += 1
         y += 1
 
@@ -80,20 +106,78 @@ def on_on_overlap2(sprite, otherSprite):
     scoresprite.set_text("Score: " + ("" + str(score)))
 sprites.on_overlap(SpriteKind.ball, SpriteKind.player, on_on_overlap2)
 
+def updateLevel():
+    global levelText
+    levelText = textsprite.create("Lvl: " + str(level), 0, 4)
+    levelText.set_position(137, 5)
+    levelText.set_outline(1, 11)
+def updateLives():
+    global livesText
+    livesText = textsprite.create("B: " + str(lives), 0, 4)
+    livesText.set_position(14, 5)
+    livesText.set_outline(1, 5)
 def getLevel(num: number):
     global brickmap
-    brickmap = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 4, 1, 4, 1, 4, 1, 0],
-        [0, 4, 1, 4, 1, 4, 1, 4, 0],
-        [0, 1, 4, 1, 4, 1, 4, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    if num==1:
+        brickmap = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 4, 1, 4, 1, 4, 1, 0],
+            [0, 4, 1, 4, 1, 4, 1, 4, 0],
+            [0, 1, 4, 1, 4, 1, 4, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ]
+    if num==2:
+        brickmap = [
+            [0, 0, 0, 3, 3, 3, 0, 0, 0],
+            [0, 0, 3, 0, 0, 0, 3, 0, 0],
+            [0, 3, 0, 0, 0, 0, 0, 3, 0],
+            [0, 3, 0, 0, 0, 0, 0, 3, 0],
+            [0, 0, 3, 0, 0, 0, 3, 0, 0],
+            [0, 0, 0, 3, 3, 3, 0, 0, 0]
+            ]
+    if num==3:
+        brickmap = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [7, 7, 7, 7, 7, 7, 7, 7, 7],
+            [7, 7, 7, 7, 7, 7, 7, 7, 7],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [9, 9, 9, 9, 9, 9, 9, 9, 9],
+            [9, 9, 9, 9, 9, 9, 9, 9, 9],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ]
+    if num==4:
+        brickmap = [
+            [1, 0, 2, 0, 3, 0, 4, 0, 5],
+            [0, 2, 0, 3, 0, 4, 0, 5, 0],
+            [2, 0, 3, 0, 4, 0, 5, 0, 6],
+            [0, 3, 0, 4, 0, 5, 0, 6, 0],
+            [3, 0, 4, 0, 5, 0, 6, 0, 7],
+            [0, 4, 0, 5, 0, 6, 0, 7, 0]
+            ]
+    if num==5:
+        brickmap = [
+            [0, 0, 0, 8, 8, 8, 0, 0, 0],
+            [0, 0, 8, 8, 8, 8, 8, 0, 0],
+            [0, 8, 7, 8, 8, 8, 7, 8, 0],
+            [0, 8, 8, 8, 8, 8, 8, 8, 0],
+            [0, 8, 7, 8, 8, 8, 7, 8, 0],
+            [0, 0, 8, 7, 7, 7, 8, 0, 0],
+            [0, 0, 0, 8, 8, 8, 0, 0, 0]
+            ]
     return brickmap
+livesText: TextSprite = None
+levelText: TextSprite = None
 mySprite: Sprite = None
 sprite22: Image = None
 x = 0
 brickmap: List[List[number]] = []
 y = 0
-numBlocks = 0
+diffy = 0
+diffx = 0
+lives = 0
+vx = 0
+ballsprite: Sprite = None
+bat: Sprite = None
 score = 0
 scoresprite: TextSprite = None
 sprite3 = None
@@ -225,10 +309,8 @@ scroller.scroll_background_with_speed(-10, 0)
 tiles.set_tilemap(tilemap("""
     level1
 """))
-getLevel(1)
-drawLevel()
 scoresprite = textsprite.create("Score: 0", 0, 4)
-scoresprite.set_position(80, 5)
+scoresprite.set_position(60, 5)
 scoresprite.set_outline(1, 2)
 score = 0
 numBlocks = 0
@@ -237,25 +319,39 @@ bat = sprites.create(assets.image("""
 """), SpriteKind.player)
 bat.set_flag(SpriteFlag.GHOST_THROUGH_WALLS, True)
 bat.set_stay_in_screen(True)
-bat.set_position(80, 110)
-controller.move_sprite(bat, 100, 0)
 ballsprite = sprites.create(assets.image("""
     ball
 """), SpriteKind.ball)
-ballsprite.set_position(80, 100)
-ballsprite.set_velocity(randint(50, 100), randint(-50, -100))
 ballsprite.set_stay_in_screen(False)
 ballsprite.set_bounce_on_wall(False)
-info.set_life(3)
+lives = 3
+updateLives()
+level = 1
+getLevel(level)
+drawLevel()
+updateLevel()
+resetBallAndBat()
 
 def on_update_interval():
-    if ballsprite.x <= 10:
-        ballsprite.vx = abs(ballsprite.vx)
-    if ballsprite.x >= scene.screen_width() - 10:
-        ballsprite.vx = abs(ballsprite.vx) * -1
-    if ballsprite.y <= 20:
+    global lives, vx
+    console.log_value("ballx", ballsprite.x)
+    console.log_value("velox", vx)
+    if ballsprite.x <= 12:
+        vx = abs(vx)
+        ballsprite.vx = vx
+        print(1)
+    if ballsprite.x >= scene.screen_width() - 12:
+        console.log_value("velox1", vx)
+        vx = abs(vx) * -1
+        console.log_value("velox2", vx)
+        ballsprite.vx = vx
+        print("bounce")
+    if ballsprite.y <= 30:
         ballsprite.vy = abs(ballsprite.vy)
-    if ballsprite.y >= scene.screen_height():
-        info.change_life_by(-1)
-        ballsprite.vy = abs(ballsprite.vy) * -1
+        print(2)
+    if ballsprite.bottom >= scene.screen_height() - 8:
+        lives += -1
+        updateLives()
+        music.sonar.play()
+        resetBallAndBat()
 game.on_update_interval(100, on_update_interval)
