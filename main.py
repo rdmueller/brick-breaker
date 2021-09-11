@@ -108,14 +108,10 @@ sprites.on_overlap(SpriteKind.ball, SpriteKind.player, on_on_overlap2)
 
 def updateLevel():
     global levelText
-    levelText = textsprite.create("Lvl: " + str(level), 0, 4)
-    levelText.set_position(137, 5)
-    levelText.set_outline(1, 11)
+    levelText.set_text("Lvl: " + str(level))
 def updateLives():
     global livesText
-    livesText = textsprite.create("B: " + str(lives), 0, 4)
-    livesText.set_position(14, 5)
-    livesText.set_outline(1, 5)
+    livesText.set_text("B: " + str(lives))
 def getLevel(num: number):
     global brickmap
     if num==1:
@@ -156,13 +152,14 @@ def getLevel(num: number):
             ]
     if num==5:
         brickmap = [
-            [0, 0, 0, 8, 8, 8, 0, 0, 0],
-            [0, 0, 8, 8, 8, 8, 8, 0, 0],
-            [0, 8, 7, 8, 8, 8, 7, 8, 0],
-            [0, 8, 8, 8, 8, 8, 8, 8, 0],
-            [0, 8, 7, 8, 8, 8, 7, 8, 0],
-            [0, 0, 8, 7, 7, 7, 8, 0, 0],
-            [0, 0, 0, 8, 8, 8, 0, 0, 0]
+            [0, 0, 0, 7, 7, 7, 0, 0, 0],
+            [0, 0, 7, 7, 7, 7, 7, 0, 0],
+            [0, 7, 8, 7, 7, 7, 8, 7, 0],
+            [0, 7, 7, 7, 7, 7, 7, 7, 0],
+            [0, 7, 7, 7, 7, 7, 7, 7, 0],
+            [0, 7, 8, 7, 7, 7, 8, 7, 0],
+            [0, 0, 7, 8, 8, 8, 7, 0, 0],
+            [0, 0, 0, 7, 7, 7, 0, 0, 0]
             ]
     return brickmap
 livesText: TextSprite = None
@@ -325,8 +322,14 @@ ballsprite = sprites.create(assets.image("""
 ballsprite.set_stay_in_screen(False)
 ballsprite.set_bounce_on_wall(False)
 lives = 3
+livesText = textsprite.create("B: " + str(lives), 0, 4)
+livesText.set_position(14, 5)
+livesText.set_outline(1, 5)
 updateLives()
 level = 1
+levelText = textsprite.create("Lvl: " + str(level), 0, 4)
+levelText.set_position(137, 5)
+levelText.set_outline(1, 11)
 getLevel(level)
 drawLevel()
 updateLevel()
@@ -354,4 +357,7 @@ def on_update_interval():
         updateLives()
         music.sonar.play()
         resetBallAndBat()
+        if lives == 0:
+            info.set_score(score)
+            game.over()
 game.on_update_interval(100, on_update_interval)

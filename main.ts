@@ -134,16 +134,12 @@ sprites.onOverlap(SpriteKind.ball, SpriteKind.Player, function on_on_overlap2(sp
 })
 function updateLevel() {
     
-    levelText = textsprite.create("Lvl: " + ("" + level), 0, 4)
-    levelText.setPosition(137, 5)
-    levelText.setOutline(1, 11)
+    levelText.setText("Lvl: " + ("" + level))
 }
 
 function updateLives() {
     
-    livesText = textsprite.create("B: " + ("" + lives), 0, 4)
-    livesText.setPosition(14, 5)
-    livesText.setOutline(1, 5)
+    livesText.setText("B: " + ("" + lives))
 }
 
 function getLevel(num: number): number[][] {
@@ -165,7 +161,7 @@ function getLevel(num: number): number[][] {
     }
     
     if (num == 5) {
-        brickmap = [[0, 0, 0, 8, 8, 8, 0, 0, 0], [0, 0, 8, 8, 8, 8, 8, 0, 0], [0, 8, 7, 8, 8, 8, 7, 8, 0], [0, 8, 8, 8, 8, 8, 8, 8, 0], [0, 8, 7, 8, 8, 8, 7, 8, 0], [0, 0, 8, 7, 7, 7, 8, 0, 0], [0, 0, 0, 8, 8, 8, 0, 0, 0]]
+        brickmap = [[0, 0, 0, 7, 7, 7, 0, 0, 0], [0, 0, 7, 7, 7, 7, 7, 0, 0], [0, 7, 8, 7, 7, 7, 8, 7, 0], [0, 7, 7, 7, 7, 7, 7, 7, 0], [0, 7, 7, 7, 7, 7, 7, 7, 0], [0, 7, 8, 7, 7, 7, 8, 7, 0], [0, 0, 7, 8, 8, 8, 7, 0, 0], [0, 0, 0, 7, 7, 7, 0, 0, 0]]
     }
     
     return brickmap
@@ -331,8 +327,14 @@ ballsprite = sprites.create(assets.image`
 ballsprite.setStayInScreen(false)
 ballsprite.setBounceOnWall(false)
 lives = 3
+livesText = textsprite.create("B: " + ("" + lives), 0, 4)
+livesText.setPosition(14, 5)
+livesText.setOutline(1, 5)
 updateLives()
 let level = 1
+levelText = textsprite.create("Lvl: " + ("" + level), 0, 4)
+levelText.setPosition(137, 5)
+levelText.setOutline(1, 11)
 getLevel(level)
 drawLevel()
 updateLevel()
@@ -365,6 +367,11 @@ game.onUpdateInterval(100, function on_update_interval() {
         updateLives()
         music.sonar.play()
         resetBallAndBat()
+        if (lives == 0) {
+            info.setScore(score)
+            game.over()
+        }
+        
     }
     
 })
